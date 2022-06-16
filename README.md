@@ -63,7 +63,7 @@ Post 192.168.1.1:/rpc
     "jsonrpc": "2.0",
     "id": 134,
     "method": "call",
-    "params": ["SID", "speed", "best_server", {"country": "COUNTRY"}]
+    "params": ["SID", "speedtest", "best_server", {"country": "COUNTRY"}]
 }
 ```
 
@@ -99,7 +99,7 @@ Post 192.168.1.1:/rpc
     "jsonrpc": "2.0",
     "id": 134,
     "method": "call",
-    "params": ["SID", "speed", "get_location"]
+    "params": ["SID", "speedtest", "get_location"]
 }
 ```
 
@@ -134,7 +134,7 @@ Post 192.168.1.1:/rpc
     "jsonrpc": "2.0",
     "id": 134,
     "method": "call",
-    "params": ["SID", "speed", "get_server_list"]}
+    "params": ["SID", "speedtest", "get_server_list"]}
 ```
 
 #### Response
@@ -315,7 +315,7 @@ Post 192.168.1.1:/rpc
     "jsonrpc": "2.0",
     "id": 134,
     "method": "call",
-    "params": ["SID", "speed", "do_download", {"host": "HOST"}]}
+    "params": ["SID", "speedtest", "do_download", {"host": "HOST"}]}
 ```
 
 #### Response
@@ -350,7 +350,7 @@ Post 192.168.1.1:/rpc
     "jsonrpc": "2.0",
     "id": 134,
     "method": "call",
-    "params": ["SID", "speed", "do_upload", {"host": "HOST"}]}
+    "params": ["SID", "speedtest", "do_upload", {"host": "HOST"}]}
 ```
 
 #### Response
@@ -382,7 +382,7 @@ Post 192.168.1.1:/rpc
     "jsonrpc": "2.0",
     "id": 134,
     "method": "call",
-    "params": ["SID", "speed", "autotest"]}
+    "params": ["SID", "speedtest", "autotest"]}
 ```
 
 #### Response
@@ -416,7 +416,7 @@ Post 192.168.1.1:/rpc
     "jsonrpc": "2.0",
     "id": 134,
     "method": "call",
-    "params": ["SID", "speed", "get_download_results"]
+    "params": ["SID", "speedtest", "get_download_results"]
 }
 ```
 
@@ -478,7 +478,7 @@ Post 192.168.1.1:/rpc
     "jsonrpc": "2.0",
     "id": 134,
     "method": "call",
-    "params": ["SID", "speed", "get_upload_results"]
+    "params": ["SID", "speedtest", "get_upload_results"]
 }
 ```
 
@@ -520,3 +520,4 @@ Post 192.168.1.1:/rpc
     }
 }
 ```
+
