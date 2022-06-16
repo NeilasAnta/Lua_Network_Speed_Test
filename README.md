@@ -193,7 +193,7 @@ Post 192.168.1.1:/rpc
     "jsonrpc": "2.0",
     "id": 134,
     "method": "call",
-    "params": ["SID", "servers_by_country", "get_server_list", , {"country": "COUNTRY"}]
+    "params": ["SID", "speedtest", "servers_by_country", , {"country": "COUNTRY"}]
 }
 ```
 
