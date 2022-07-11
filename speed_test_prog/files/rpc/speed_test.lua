@@ -49,7 +49,6 @@ function M.servers_by_country(params)
     os.execute("speedtest.lua --getbycountry " .. params.country .. " -q")
     local status = cjson.decode(utils.readfile(STATUS_PATH))
     if status.status == "ok" then
-        list = cjson.decode(utils.readfile(SERVER_LIST_PATH))
         return { status = "ok", host = cjson.decode(utils.readfile(COUNTRY_SERVER_LIST_PATH))  }
     else
         return { status = status.status, message =  status.message }
@@ -117,7 +116,5 @@ function M.get_upload_results(params)
         return { status = "error", message = "upload test unsuccessful"  }
     end
 end
-
-
 
 return M

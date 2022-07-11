@@ -23,6 +23,7 @@ TOTAL_TEST_TIME = 20
 local function testServer(server)
 	f = io.open(NULL_FILE, "w")
 	local easy = cURL.easy()
+	
 	easy:setopt({
 		url = string.format(server),
 		port = 8080,
@@ -36,35 +37,42 @@ local function testServer(server)
 	local status, error = pcall(function()
 		easy:perform()
 	end)
+
 	if status then
 		return true
 	else
 		return false
 	end
+
 	f:close()
 	easy:close()
 
 end
 
 function auto_test(quiet)
-	server = nil
-	location = nil
+	local server = nil
+	local location = nil
 	location = get_location(quiet)
+
 	if location == 2 then
 		if not quiet then
 			print("Unable get location")
 		end
 		return 2
 	end
+
 	server = best_server(location, quiet)
+
 	if server == 2 then
 		if not quiet then
 			print("Unable to determine best server")
 		end
 		return 2
 	end
+
 	os.remove(UPLOAD_RESULT)
 	os.remove(DONWLOAD_RESULT)
+
 	print("Download test: ")
 	download(server, quiet)
 	print("Upload test: ")
@@ -72,7 +80,6 @@ function auto_test(quiet)
 end
 
 function download(server, quiet)
-
 	if server == nil then
 		print("Please provide a server for download speed test using")
 		return
@@ -80,6 +87,7 @@ function download(server, quiet)
 
 	local null_file = io.open(NULL_FILE, "w")
 	local url = server .. "/download?size=" .. SIZE * 1000000
+
 	local c = cURL.easy({
 		url = url,
 		port = 8080,
@@ -95,9 +103,11 @@ function download(server, quiet)
 	local start_time = socket.gettime()
 	local downloaded_size_mb, end_time, total_time, download_speed, total_size_mb, percent_downloaded, prev_size, same_value_count, download_file = 0, 0, 0, 0, 0, 0, 0, 0, 0
 	print("Started")
+
 	if not quiet then
 		print(string.format("\r%-35s %-10s %-12s %-12s %-10s", "Server", "Total(MB)", "Now(MB)", "Percent(%)", "Speed, Mbps"))
 	end
+
 	if not testServer(server) then
 		if not quiet then
 			print("Network error")
@@ -120,6 +130,7 @@ function download(server, quiet)
 		}))
 		ok_message:close()
 	end
+
 	c:setopt_progressfunction(function(dltotal, dlnow)
 		if quiet then
 			download_file = io.open(DONWLOAD_RESULT, "w")
@@ -139,15 +150,19 @@ function download(server, quiet)
 			c:close()
 			return
 		end
+
 		downloaded_size_mb = dlnow / 1000000
+
 		if downloaded_size_mb == prev_size then
 			same_value_count = same_value_count + 1
 		else
 			same_value_count = 0
 		end
+
 		end_time = socket.gettime()
 		total_time = end_time - start_time
 		download_speed = downloaded_size_mb * 8 / total_time
+
 		if quiet then
 			download_file = io.open(DONWLOAD_RESULT, "w")
 			download_file:write(cjson.encode({
@@ -156,7 +171,8 @@ function download(server, quiet)
 				download_speed = tostring(download_speed)
 			}))
 			io.close(download_file)
-		end		
+		end	
+
 		if not quiet then
 			total_size_mb = dltotal / 1000000
             percent_downloaded = math.floor((dlnow / dltotal * 100) * 100) / 100
@@ -165,10 +181,12 @@ function download(server, quiet)
 		prev_size = downloaded_size_mb
 		
 	end)
+
 	c:setopt(cURL.OPT_NOPROGRESS, false)
 	local status, error = pcall(function()
 		c:perform()
 	end)
+
 	if error == "[CURL-EASY][COULDNT_CONNECT] Error (7)" or error == "[CURL-EASY][COULDNT_RESOLVE_HOST] Error (6)" or error == "[CURL-EASY][OPERATION_TIMEDOUT] Error (28)"  then
 		if not quiet then
 			print("Network error")
@@ -182,24 +200,29 @@ function download(server, quiet)
 		end
 		return 2
 	end
+
 	local json = cjson.encode({
 		status = "done",
 		host = server,
 		download_speed = tostring(download_speed)
 	})
+
 	download_file = io.open(DONWLOAD_RESULT, "w")
+
 	if error == "[CURL-EASY][PARTIAL_FILE] Error (18)" then
 		if quiet then
 			download_file:write(json)
 		end
 		print("\nTest finished!")
 	end
+
 	if status then
 		if quiet then
 			download_file:write(json)
 		end
 		print("\nTest finished!")
 	end
+
 	io.close(null_file)
 	io.close(download_file)
 end
@@ -209,8 +232,10 @@ function upload(server, quiet)
 		print("Please provide a server for upload speed test using")
 		return
 	end
+
 	local null_file = io.open(NULL_FILE, "w")
 	local url = server .. "/upload"
+
 	local c = cURL.easy({
 		url = url,
 		port = 8080,
@@ -230,6 +255,7 @@ function upload(server, quiet)
 		connecttimeout = 2,
 		accepttimeout_ms = 2
 	})
+
 	local start_time = socket.gettime()
 	local uploaded_size_mb, end_time, total_time, upload_speed, total_size_mb, percent_uploaded, prev_size, same_value_count, upload_file = 0, 0, 0, 0, 0, 0, 0, 0, 0
 	print("Started")	
@@ -258,6 +284,7 @@ function upload(server, quiet)
 		}))
 		ok_message:close()
 	end
+
 	c:setopt_progressfunction(function(_, _, ultotal, ulnow)
 		if quiet then
 			upload_file = io.open(UPLOAD_RESULT, "w")
@@ -276,15 +303,19 @@ function upload(server, quiet)
 			c:close()
 			return
 		end
+
 		uploaded_size_mb = ulnow / 1000000
+
 		if uploaded_size_mb == prev_size then
 			same_value_count = same_value_count + 1
 		else
 			same_value_count = 0
 		end
+
 		end_time = socket.gettime()
         total_time = end_time - start_time
 		upload_speed = uploaded_size_mb * 8 / total_time
+
 		if quiet then
 			upload_file:write(cjson.encode({
 				status = "working",
@@ -293,9 +324,11 @@ function upload(server, quiet)
 			}))
 			io.close(upload_file)
 		end
+
 		if not quiet then
 			io.write(string.format("\r%-35s %-12s %-10s", server, uploaded_size_mb, upload_speed))
 		end
+
 		prev_size = uploaded_size_mb
 	end)
 	
@@ -323,6 +356,7 @@ function upload(server, quiet)
 		host = server,
 		upload_speed = tostring(upload_speed)
 	})
+
 	upload_file = io.open(UPLOAD_RESULT, "w")
 	if error == "[CURL-EASY][OPERATION_TIMEDOUT] Error (28)" then
 		if quiet then
@@ -390,6 +424,7 @@ function best_server(countryName, quiet)
 	if not file_exists(SERVER_LIST_LOCATION) then
 		get_serverlist()
 	end
+
 	serverList = io.open(SERVER_LIST_LOCATION, "r")
 	local jsonString = serverList:read("*a")
 	local parsedValues = cjson.decode(jsonString)
@@ -409,9 +444,11 @@ function best_server(countryName, quiet)
 				connecttimeout = 2,
 				accepttimeout_ms = 2
 			})
+
 			local status, error = pcall(function()
 				easy:perform()
 			end)
+
 			if status then
 				easy:getinfo_response_code()
 				serverTime = easy:getinfo_total_time()
@@ -461,6 +498,7 @@ function get_by_country(countryName, quiet)
 			return 2
 		end
 	end
+
 	serverList = io.open(SERVER_LIST_LOCATION, "r")
 	local jsonString = serverList:read("*a")
 	local parsedValues = cjson.decode(jsonString)
@@ -473,6 +511,7 @@ function get_by_country(countryName, quiet)
 			end
 		end
 	end
+
 	f = io.open(COUNTRY_SERVER_LIST_LOCATION, "w")
 	if next(serverData) == nil then
 		os.remove(COUNTRY_SERVER_LIST_LOCATION)
@@ -489,6 +528,7 @@ function get_by_country(countryName, quiet)
 		f:close()
 		return 2
 	end
+
 	if quiet then
 		f:write(cjson.encode(serverData))
 		f:close()
@@ -535,8 +575,10 @@ function get_location(quiet)
 		easy:getinfo_response_code()
 		table.concat(data)
 	end
+
 	easy:close()
 	parsed = cjson.decode(data[1])
+	
 	if not quiet then
 		print(parsed.country)
 	else
