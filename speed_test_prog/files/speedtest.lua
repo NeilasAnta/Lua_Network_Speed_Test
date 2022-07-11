@@ -6,7 +6,7 @@ local socket = require "socket"
 local argparse = require "argparse"
 
 API_IP_DATA = "https://api.myip.com"
-SERVER_LIST = "https://raw.githubusercontent.com/NeilasAnta/SpeedTestServerList/main/speedtest_server_list.json"
+SERVER_LIST = "https://raw.githubusercontent.com/NeilasAnta/Lua_Network_Speed_Test/main/speedtest_server_list.json"
 NULL_FILE = "/dev/null"
 BIG_FILE = "/dev/zero"
 SERVER_LIST_LOCATION = "/tmp/speedtest_server_list.json"
